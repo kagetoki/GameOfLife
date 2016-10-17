@@ -20,7 +20,7 @@ namespace Game
                 _field[i] = new Cell[height];
                 for(int j = 0; j< height; j++)
                 {
-                    _field[i][j] = new Cell();
+                    _field[i][j] = new Cell(i,j);
                 }
             }
         }

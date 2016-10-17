@@ -1,13 +1,13 @@
-﻿namespace Game
+﻿using System.Collections.Generic;
+
+namespace Game
 {
     public class NewGenerationEventArgs
     {
-        public Field Old { get; private set; }
-        public Field New { get; private set; }
-        public NewGenerationEventArgs(Field old, Field @new)
+        public NewGenerationEventArgs(IList<Cell> changedCells)
         {
-            Old = old;
-            New = @new;
+            ChangedCells = changedCells;
         }
+        public IList<Cell> ChangedCells { get; private set; }
     }
 }

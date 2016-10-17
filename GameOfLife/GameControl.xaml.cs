@@ -27,7 +27,7 @@ namespace GameOfLife
         private const int CELL_SIZE = 20;
         public GameControl()
         {
-            _game = new ConwayGame(40,40, 1000);
+            _game = new ConwayGame(50,50, 100);
             InitializeComponent();
             DrawGrid();
             _game.GenerationChanged += RedrawGrid;
@@ -54,12 +54,11 @@ namespace GameOfLife
                 }
             }
         }
-
-        private void RedrawGrid(object sender, NewGenerationEventArgs args)
+        private void CleanCells()
         {
-            for (int x = 0; x < args.New.Width; x++)
+            for (int x = 0; x < _game.Field.Width; x++)
             {
-                for (int y = 0; y < args.New.Height; y++)
+                for (int y = 0; y < _game.Field.Height; y++)
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -68,6 +67,19 @@ namespace GameOfLife
                         btn.Background = _game.Field[x, y].IsAlive ? AliveColor : DeadColor;
                     }, System.Windows.Threading.DispatcherPriority.Send);
                 }
+            }
+            
+        }
+        private void RedrawGrid(object sender, NewGenerationEventArgs args)
+        {
+            foreach(var cell in args.ChangedCells)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    var btn = GameGrid.Children.Cast<UIElement>().
+                      FirstOrDefault(e => Grid.GetColumn(e) == cell.X && Grid.GetRow(e) == cell.Y) as Button;
+                    btn.Background = cell.IsAlive ? AliveColor : DeadColor;
+                }, System.Windows.Threading.DispatcherPriority.Send);
             }
         }
 
@@ -118,7 +130,7 @@ namespace GameOfLife
                     _game.Field[x, y].IsAlive = false;
                 }
             }
-            RedrawGrid(null, new NewGenerationEventArgs(null, _game.Field));
+            CleanCells();
             this.StartGameBtn.Content = "Start";
         }
     }

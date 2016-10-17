@@ -30,8 +30,9 @@ namespace Game
         private void ChangeGeneration()
         {
             _prevField = _field;
-            _field = _generationLogic.NewGeneration(_field);
-            GenerationChanged?.Invoke(this, new NewGenerationEventArgs(_prevField, _field));
+            var generation = _generationLogic.Generation(_field);
+            _field = generation.NewField;
+            GenerationChanged?.Invoke(this, new NewGenerationEventArgs(generation.ChangedCells));
         }
 
         public void Start()
@@ -64,6 +65,7 @@ namespace Game
         ~ConwayGame()
         {
             Dispose();
+            _isDisposed = true;
         }
     }
 }
